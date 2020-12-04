@@ -7,11 +7,9 @@ REQUIRED_FIELDS = dict(
     iyr = lambda s: 2010 <= int(s) <= 2020,
     eyr = lambda s: 2020 <= int(s) <= 2030,
     hgt = lambda s: bool(
-            (m := re.fullmatch(r"([0-9]+)(cm|in)", s))
-            and int(m.group(1)) in {
-                'cm': range(150, 194),
-                'in': range(59, 77),
-            }[m.group(2)]
+                (m := re.fullmatch(r"([0-9]+)(cm|in)", s))
+            and (r := {'cm': range(150, 194), 'in': range(59, 77)}[m.group(2)])
+            and (int(m.group(1)) in r)
         ),
     hcl = lambda s: re.fullmatch(r"#[0-9a-f]{6}", s),
     ecl = lambda s: s in "amb blu brn gry grn hzl oth".split(),
