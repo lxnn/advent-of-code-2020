@@ -1,33 +1,22 @@
-import sys, collections, itertools, functools, math
+import sys
+from math import e, pi, radians
 
 with open(sys.argv[1]) as file:
-    instructions = [
-        (line[0], int(line[1:]))
-        for line in file
-    ]
+    instructions = [(line[0], int(line[1:])) for line in file]
 
-x, y, heading = 0., 0., 90.
+position, waypoint = 0+0j, 1+0j
+directions = dict(N=0+1j, E=1+0j, S=0-1j, W=-1+0j)
 
 for op, arg in instructions:
-    if op == 'N':
-        y += arg
-    elif op == 'S':
-        y -= arg
-    elif op == 'E':
-        x += arg
-    elif op == 'W':
-        x -= arg
+    if op in directions:
+        position += arg * directions[op]
     elif op == 'F':
-        x += arg * math.sin(math.radians(heading))
-        y += arg * math.cos(math.radians(heading))
+        position += arg * waypoint
     elif op == 'L':
-        heading -= arg
-        heading %= 360
+        waypoint *= e ** (+radians(arg) * 1j)
     elif op == 'R':
-        heading += arg
-        heading %= 360
+        waypoint *= e ** (-radians(arg) * 1j)
     else:
         assert False
 
-ans = abs(x) + abs(y)
-print(f"{x=:.2f} {y=:.2f} {ans=:.2f}")
+print(round(abs(position.real) + abs(position.imag), 2))

@@ -1,40 +1,22 @@
-import sys, collections, itertools, functools, math
-from math import radians, sin, cos
+import sys
+from math import e, pi, radians
 
 with open(sys.argv[1]) as file:
-    instructions = [
-        (line[0], int(line[1:]))
-        for line in file
-    ]
+    instructions = [(line[0], int(line[1:])) for line in file]
 
-x, y, dx, dy = 0., 0., 10., 1.
+position, waypoint = 0+0j, 10+1j
+directions = dict(N=0+1j, E=1+0j, S=0-1j, W=-1+0j)
 
 for op, arg in instructions:
-    if op == 'N':
-        dy += arg
-    elif op == 'S':
-        dy -= arg
-    elif op == 'E':
-        dx += arg
-    elif op == 'W':
-        dx -= arg
+    if op in directions:
+        waypoint += arg * directions[op]
     elif op == 'F':
-        x += arg * dx
-        y += arg * dy
+        position += arg * waypoint
     elif op == 'L':
-        rad = radians(arg)
-        dx, dy = (
-            + dx * cos(rad) - dy * sin(rad),
-            + dx * sin(rad) + dy * cos(rad)
-        )
+        waypoint *= e ** (+radians(arg) * 1j)
     elif op == 'R':
-        rad = radians(arg)
-        dx, dy = (
-            + dx * cos(rad) + dy * sin(rad),
-            - dx * sin(rad) + dy * cos(rad)
-        )
+        waypoint *= e ** (-radians(arg) * 1j)
     else:
         assert False
 
-ans = abs(x) + abs(y)
-print(f"{x=:.2f} {y=:.2f} {ans=:.2f}")
+print(round(abs(position.real) + abs(position.imag), 2))
