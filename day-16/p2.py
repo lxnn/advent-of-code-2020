@@ -1,4 +1,4 @@
-import sys, math, operator, collections
+import sys, math, operator, collections, itertools
 
 with open(sys.argv[1]) as file:
     fields_text, ticket_text, nearby_text = file.read().split('\n\n')
@@ -47,16 +47,9 @@ state = [
 ]
 
 while any(len(s) > 1 for s in state):
-    singletons = [
-        (i, s)
-        for i, s in enumerate(state)
-        if len(s) == 1
-    ]
-    for i, fieldset1 in singletons:
-        for j, fieldset2 in enumerate(state):
-            if i == j:
-                continue
-            fieldset2 -= fieldset1
+    for s1, s2 in itertools.permutations(state, 2):
+        if len(s2) == 1:
+            s1 -= s2
 
 fieldnames = [
     field
