@@ -1,9 +1,9 @@
-from utils import *
+import sys
 
-if len(sys.argv) >= 2:
+try:
     with open(sys.argv[1]) as file:
         rawinput = file.read()
-else:
+except IndexError:
     rawinput = sys.stdin.read()
 
 expressions = map(str.strip, rawinput.splitlines())
@@ -11,7 +11,7 @@ expressions = map(str.strip, rawinput.splitlines())
 def torpn(exp):
     stack = []
     for char in exp:
-        if char in digits:
+        if char in '0123456789':
             yield int(char)
         elif char == '+':
             stack.append(char)
@@ -27,7 +27,6 @@ def torpn(exp):
             assert stack.pop() == '('
         else:
             continue
-    assert not containsany(stack, '()'), stack
     yield from reversed(stack)
 
 def evalrpn(rpn):
